@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"
+    type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"
+    type="text/javascript" charset="utf-8"></script>
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <div style="width: 640px; height: 480px" id="mapContainer"></div>
+    <button id = "find-me">Show my location</button><br/>
+<p id = "status"></p>
+<a id = "map-link" target="_blank"></a>
+<script>
+    function geoFindMe() {
+
+const status = document.querySelector('#status');
+const mapLink = document.querySelector('#map-link');
+
+mapLink.href = '';
+mapLink.textContent = '';
+
+function success(position) {
+  const latitude  = position.coords.latitude;
+  const longitude = position.coords.longitude;
+
+  status.textContent = '';
+  mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
+  mapLink.textContent = `Latitude: ${latitude} °, Longitude: ${longitude} °`;
+}
+
+function error() {
+  status.textContent = 'Unable to retrieve your location';
+}
+
+if (!navigator.geolocation) {
+  status.textContent = 'Geolocation is not supported by your browser';
+} else {
+  status.textContent = 'Locating…';
+  navigator.geolocation.getCurrentPosition(success, error);
+}
+
+}
+
+document.querySelector('#find-me').addEventListener('click', geoFindMe);
+</script>
+    <script>
+      // Initialize the platform object:
+      var platform = new H.service.Platform({
+        'apikey': '{YOUR_API_KEY}'
+      });
+
+      // Obtain the default map types from the platform object
+      var maptypes = platform.createDefaultLayers();
+
+      // Instantiate (and display) a map object:
+      var map = new H.Map(
+        document.getElementById('mapContainer'),
+        maptypes.vector.normal.map,
+        {
+          zoom: 12,
+          center: { lng: 30.37788391, lat: 60.0117123 }
+        });
+    </script>
+  </body>
+</html>
+
+
